@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn {
+    @apply bg-slate-500 p-5;
+}
+.week {
+    @apply flex h-3/4;
+}
+.week_day{
+    @apply flex-1 m-5 p-5 !h-[75%] bg-amber-100;
+}
+.week_day_title{
+    @apply text-center text-lg pb-4;
+}
+.date{
+    @apply text-center text-lg pb-4;
+}
+.meal{
+    @apply pb-4 h-1/4 border-2;
+}
