@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Entry;
 use DateTime;
 use Illuminate\Http\Request;
 
@@ -23,13 +24,16 @@ class DateController extends Controller
 
         $year = substr($request->week,0,4);
         $week = substr($request->week,6,7);
-        $startDate = (new DateTime())->setISODate($year, $week)->format('d.m.Y');
-        $endDate = (new DateTime())->setISODate($year, $week, 7)->format('d.m.Y');
-        // going back with creating new session variables
-        return back()
-            ->with('selectedWeek', $request->week)
-            ->with('weekStart', $startDate)
-            ->with('weekEnd', $endDate);
-;
+        $startDate = (new DateTime())->setISODate($year, $week)->format('Y-m-d');
+        $endDate = (new DateTime())->setISODate($year, $week, 7)->format('Y-m-d');
+        
+        $entries=Entry::whereBetween('date',[$startDate,$endDate])->get();
+        // 
+        return view('week', [
+            'selectedWeek'=>$request->week,
+            'weekStart'=>$startDate,
+            'weekEnd'=>$endDate,
+            'entries'=>$entries
+        ]);
     }
 }

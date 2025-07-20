@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DateController;
+use App\Http\Controllers\EntryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,12 +16,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('week');
 });
+Route::get('/{day}', function ($day) {
+    return view('day', ['day' => $day]);
+})->name('show.day');
+
 
 Route::post('/show-date', [DateController::class, 'showDate'])->name('show.date');
 Route::post('/show-week', [DateController::class, 'showWeek'])->name('show.week');
 
-Route::get('/{day}', function ($day) {
-    return view('day', ['day' => $day]);
-})->name('show.day');
+
+
+Route::get('/entries', [EntryController::class, 'index']);

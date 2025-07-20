@@ -6,7 +6,7 @@
     @apply bg-slate-500 p-5;
 }
 .week {
-    @apply flex h-3/4;
+    @apply flex ;
 }
 .week_day{
     @apply flex-1 m-5 p-5 !h-[75%] bg-amber-100;
@@ -18,5 +18,5 @@
     @apply text-center text-lg pb-4;
 }
 .meal{
-    @apply pb-4 h-1/4 border-2;
+    @apply pb-4  border-2 text-sm;
 }

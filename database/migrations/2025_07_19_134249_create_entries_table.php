@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Product;
+use App\Models\Meal;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +18,11 @@ return new class extends Migration
     {
         Schema::create('entries', function (Blueprint $table) {
             $table->id();
+            $table->integer('weight');
+            $table->foreignIdFor(Product::class);
+            $table->foreignIdFor(Meal::class);
+            $table->foreignIdFor(User::class);
+            $table->date('date');
             $table->timestamps();
         });
     }
