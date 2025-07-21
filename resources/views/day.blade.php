@@ -1,35 +1,76 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.app')
 
-        <title>Laravel</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    </head>
-    <body class="h-screen">
-        
-        <form action="{{ route('show.week') }}" method="post" class="btn">
+@section('forms')
+    <form action="{{ route('show.week') }}" method="post" class="btn">
             @csrf
-            <input type="week" name="week">
-           <button type="submit">Отправить</button>
-        </form>
+            <input type="week" name="week" 
+            class="px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onchange="this.form.submit()">
+    </form>
+@endsection
 
+@section('data_on_days')
+        @php
+            $day_params=session('return_to_day_params');
+            $meals=['Завтрак', 'Обед', 'Ужин'];
+            //$date = new DateTime($selectedDate)
+            $date = new DateTime($day_params['selectedDate']);
+            $breakfastEntries=$day_params['breakfastEntries'];
+            $lunchEntries=$day_params['lunchEntries'];
+            $dinnerEntries=$day_params['dinnerEntries'];
+        @endphp
+        <div class="">
+            {{ $date->format('d.m.Y')}}
+        </div>
         <div class="week">
-                @php
-                    $meals=['Завтрак', 'Обед', 'Ужин', 'Перекус'];
-                    $start = new DateTime(session('weekStart'))
-                @endphp
-                <div class="">
-                    {{ $start->format('d.m.Y') }}
+            <div>
+                <h2>{{ $meals[0] }}</h2>
+                <div class="meal">
+                    @foreach ( $breakfastEntries as $item )
+                        {{ $item->product->name }}<br>
+                        kkal: {{ $item->weight * $item->product->kkal/100 }}<br>
+                        @php $total = $item->weight * $item->product->kkal/100 @endphp
+                    @endforeach
+                    <a href="{{ route('entries.create', [
+                            'date' => $date->format('Y-m-d'),
+                            'meal' => 1
+                        ]) 
+                    }}" > Добавить новую запись</a> 
                 </div>
-                @for ($i=0; $i<4; $i++)
-                    <a href="{{ route('show.date') }}" class="block week_day">
-                        <h2>{{ $meals[$i] }}</h2>
-                    </a>
-                @endfor
-            
+            </div>
+            <div>
+                <h2>{{ $meals[1] }}</h2>
+                <div class="meal">
+                    @foreach ( $lunchEntries as $item )
+                        {{ $item->product->name }}<br>
+                        kkal: {{  $item->weight * $item->product->kkal/100 }}<br>
+                        @php $total += $item->weight * $item->product->kkal/100 @endphp
+                    @endforeach
+                    <a href="{{ route('entries.create', [
+                            'date' => $date->format('Y-m-d'),
+                            'meal' => 2
+                        ]) 
+                    }}" > Добавить новую запись</a> 
+                </div>
+            </div>    
+            <div>
+                <h2>{{ $meals[2] }}</h2>
+                <div class="meal">
+                    @foreach ( $dinnerEntries as $item )
+                        {{ $item->product->name }}<br>
+                        kkal: {{ $item->weight * $item->product->kkal/100 }}<br>
+                        @php $total += $item->weight * $item->product->kkal/100 @endphp
+                    @endforeach
+                    <a href="{{ route('entries.create', [
+                            'date' => $date->format('Y-m-d'),
+                            'meal' => 3
+                        ]) 
+                    }}" > Добавить новую запись</a>                     
+                </div>
+            </div>
+                
+            <div>
+                Total kkal: {{ $total }}
+            </div>
         </div>  
-    </body>
-</html>
+@endsection

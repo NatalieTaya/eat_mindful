@@ -17,51 +17,48 @@
                 @php
                     $start = new DateTime($weekStart);
                     $week_days=['Monday', 'Tuesday', 'Wednesday', 'Thursday','Friday','Sunday','Saturday'];
-                    //$breakastData= $entries->where('date',$start)->where('meal.name','breakfast')->pluck('product.name')
                 @endphp
                 @for ($i=0; $i<7; $i++)
-                    <a href="{{ route('show.day', ['day'=>$start->format('d.m.Y')]) }}" class="block week_day">
+                    <form action="{{ route( 'show.day') }}" method="post" class="block week_day">
+                        @csrf
                         @php
                             //ENTRIES FOR THE DAY
-                            $data= $entries->where('date',$start->format('Y-m-d'));
-                        @endphp  
+                            $breakfast= $breakfastEntries->where('date',$start->format('Y-m-d'));
+                            $lunch= $lunchEntries->where('date',$start->format('Y-m-d'));
+                            $dinner= $dinnerEntries->where('date',$start->format('Y-m-d'));
+                        @endphp
+                        <input type="hidden" name="date" value="{{ $start->format('Y-m-d') }}">
+                        <button type="submit" class="block week_day">
                         <h2 class="week_day_title">{{ $week_days[$i] }}</h2>
                         <h2 class="date">{{ $start->format('d.m.Y') }}</h2>
                         <div class="h-5/6">
                             <div class="meal">
-                                @php
-                                    $breakfastEntries= $data->filter(function($entry) {
-                                        return $entry->meal->name == 'breakfast';
-                                    })
-                                @endphp  
-                                @foreach ( $breakfastEntries as $item )
-                                    {{ $item->product->name }}<br>
-                                    kkal: {{ $item->weight * $item->product->kkal/100 }}<br>                                @endforeach
-                            </div>
-                            <div class="meal">
-                                @php
-                                    $lunchEntries= $data->filter(function($entry) {
-                                        return $entry->meal->name == 'lunch';
-                                    })
-                                @endphp  
-                                @foreach ( $lunchEntries as $item )
+                                @foreach ( $breakfast as $item )
                                     {{ $item->product->name }}<br>
                                     kkal: {{ $item->weight * $item->product->kkal/100 }}<br>
-                                @endforeach                          
+                                    @php $total = $item->weight * $item->product->kkal/100 @endphp
+                                @endforeach
                             </div>
                             <div class="meal">
-                                @php
-                                    $dinnerEntries= $data->filter(function($entry) {
-                                        return $entry->meal->name == 'dinner';
-                                    })
-                                @endphp  
-                                @foreach ( $dinnerEntries as $item )
+                                @foreach ( $lunch as $item )
+                                    {{ $item->product->name }}<br>
+                                    kkal: {{  $item->weight * $item->product->kkal/100 }}<br>
+                                    @php $total += $item->weight * $item->product->kkal/100 @endphp
+                                @endforeach
+                            </div>
+                            <div class="meal">
+                                @foreach ( $dinner as $item )
                                     {{ $item->product->name }}<br>
                                     kkal: {{ $item->weight * $item->product->kkal/100 }}<br>
-                                @endforeach                   
+                                    @php $total += $item->weight * $item->product->kkal/100 @endphp
+                                @endforeach
                             </div>
-                        </div>
-                    </a>
+                            <div>
+                                Total kkal: {{ $total }}
+                            </div>
+                        </div>  
+                        </button>
+                    </form>
                     @php
                         $start -> add(new DateInterval("P1D"))
                     @endphp

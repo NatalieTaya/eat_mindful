@@ -20,3 +20,6 @@
 .meal{
     @apply pb-4  border-2 text-sm;
 }
+.input {
+    @apply bg-slate-300 block;
+}
