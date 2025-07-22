@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Entry extends Model
 {
+    protected $fillable =[
+        'weight','product_id','meal_id','user_id','date' 
+    ];
+
     use HasFactory;
     public function product(): BelongsTo {
         return $this->belongsTo(Product::class);

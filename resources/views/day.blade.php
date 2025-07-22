@@ -7,6 +7,11 @@
             class="px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             onchange="this.form.submit()">
     </form>
+
+    <a href="{{ route('products.create') }}"> 
+        Create a product 
+    </a> 
+   
 @endsection
 
 @section('data_on_days')
@@ -18,6 +23,7 @@
             $breakfastEntries=$day_params['breakfastEntries'];
             $lunchEntries=$day_params['lunchEntries'];
             $dinnerEntries=$day_params['dinnerEntries'];
+            //dd($dinnerEntries);
         @endphp
         <div class="">
             {{ $date->format('d.m.Y')}}
