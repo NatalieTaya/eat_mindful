@@ -14,6 +14,7 @@ class DateController extends Controller
             'date' => 'required|date_format:Y-m-d'
         ]);
         //entries for the day chosen
+        $entries=Entry::where('date',$request->date)->get();
         $breakfastEntries=Entry::where('date',$request->date)
                 ->whereHas('meal',function($query) {
                     $query->where('name','breakfast');
@@ -29,18 +30,13 @@ class DateController extends Controller
         //creating session variables
         session(['return_to_day_params' => [
             'selectedDate'=> $request->date,
+            'entries'=> $entries,
             'breakfastEntries'=>$breakfastEntries,
             'lunchEntries'=>$lunchEntries,
             'dinnerEntries'=>$dinnerEntries
         ]]);         
         // going back with creating new variables
         return view('day');
-        //return view('day',[
-            //'selectedDate'=> $request->date,
-            //'breakfastEntries'=>$breakfastEntries,
-            //'lunchEntries'=>$lunchEntries,
-            //'dinnerEntries'=>$dinnerEntries
-        //]);
     }
     public function showWeek(Request $request){
         // checking if the week is correct

@@ -54,6 +54,51 @@ class EntryController extends Controller
         session(['return_to_day_params' => $day_params]);
 
         //going back to day chosen
-        return view('day');
+        return redirect()->route('show.day', [
+            'date' => $day_params['selectedDate']
+        ]);
+    }
+    public function edit($date, $meal, $entry){
+        $products=Product::all();
+        
+        return view('entries.edit', [
+            'date' => DateTime::createFromFormat('Y-m-d', $date),
+            'meal'=> $meal,
+            'products'=>$products,
+            'entry'=>$entry
+        ]);
+    }
+    public function update(){
+        
+    }
+    public function destroy(Entry $entry, $meal){
+        $day_params=session('return_to_day_params');
+        
+        $mealType = (int)$meal;
+        $entriesMeal = match ($mealType) {
+            1=>'breakfastEntries',
+            2=>'lunchEntries',
+            3=>'dinnerEntries',
+            default => throw new \InvalidArgumentException("Unknown meal type: {$mealType}"),
+        };
+
+        if (isset($day_params[$entriesMeal])) {
+            if (is_object($day_params[$entriesMeal]) && method_exists($day_params[$entriesMeal], 'toArray')) {
+                $day_params[$entriesMeal] = $day_params[$entriesMeal]->toArray();
+            }
+            
+            $day_params[$entriesMeal] = array_filter($day_params[$entriesMeal], function($item) use ($entry) {
+                $itemId = is_array($item) ? $item['id'] : $item->id;
+                return $itemId != $entry->id;
+            });
+            
+            session(['return_to_day_params' => json_decode(json_encode($day_params), true)]);
+        }
+
+        $entry->delete();
+        //dd(route('show.day')); // Посмотрите какой URL генерируется
+            return redirect()->route('show.day', [
+            'date' => $day_params['selectedDate']
+        ]);
     }
 }

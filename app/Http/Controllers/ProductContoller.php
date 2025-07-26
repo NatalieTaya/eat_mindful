@@ -29,6 +29,6 @@ class ProductContoller extends Controller
             'kkal'=> $validated['kkal']
         ]);
 
-        return(route('show.week'));
+        return redirect(route('main'));
     }
 }

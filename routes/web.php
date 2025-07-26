@@ -19,11 +19,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('week');
-});
+})->name('main');
 
 Route::post('/show-week', [DateController::class, 'showWeek'])->name('show.week');
-Route::post('/day',[DateController::class, 'showDate'])->name('show.day');
-
+Route::get('/day', [DateController::class, 'showDate'])->name('show.day');
+Route::get('/test-route', function() {
+    return 'Это тестовый маршрут';
+});
 
 
 Route::get('/entries', [EntryController::class, 'index']);
@@ -32,6 +34,14 @@ Route::get('/entries/create/{date}/{meal}',[EntryController::class, 'create'])
         ->name('entries.create');
 Route::post('/entries/store',[EntryController::class, 'store'])
         ->name('entries.store');
+Route::get('/entries/edit/{date}/{meal}/{entry}',[EntryController::class, 'edit'])
+        ->name('entries.edit');
+Route::post('/entries/update',[EntryController::class, 'update'])
+        ->name('entries.update');
+Route::delete('/entries/{entry}/{meal}',[EntryController::class, 'destroy'])
+        ->name('entries.destroy');
+
+
 
 Route::get('/products/create',[ProductContoller::class, 'create'])
         ->name('products.create');
